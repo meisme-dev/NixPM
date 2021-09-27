@@ -17,13 +17,13 @@ int main(){
 int parse_file(char *path){
     FILE *file = fopen(path, "r+");
     int file_size = get_file_size(path);
-    char s[file_size], s_line[file_size], s_until_line[file_size], path2[strlen(path) + 4];
-    char envPath[] = "/usr/bin/env", arg1[] = "cp", suffix[] = ".tmp";
-    strcpy(path2, path);
-    strcat(path2, suffix);
+    char s[file_size], s_line[file_size], s_until_line[file_size], tmp_path[strlen(path) + 4];
+    char env_path[] = "/usr/bin/env", cp_path[] = "cp", file_extension[] = ".tmp";
+    strcpy(tmp_path, path);
+    strcat(tmp_path, file_extension);
     pid_t pid = fork();
     if(pid){
-        execl(envPath, arg1, path, path2, NULL);
+        execl(env_path, cp_path, path, tmp_path, NULL);
     }
     else if(pid < 0){
         perror("Error");
