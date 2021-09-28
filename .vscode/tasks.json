@@ -11,7 +11,8 @@
                 "-std=c99",
                 "-pedantic",
                 "-g",
-                "${file}",
+                "src/cmd.c",
+                "src/config.c",
                 "-o",
                 "bin/${fileBasenameNoExtension}"
             ],

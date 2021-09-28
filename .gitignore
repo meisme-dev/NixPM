@@ -1,2 +1,4 @@
-bin/*
-*.nix
+bin/
+template.nix
+a.out
+makefile
