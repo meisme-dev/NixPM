@@ -1,12 +1,15 @@
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g
 CC = cc
-ALL: config.c cmd.c configure
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic
+OBJFILES = src/config.o src/cmd.o
+TARGET = bin/nixpm
+
+ALL: configure $(TARGET)
 
 configure:
 	mkdir -p bin
 
-cmd.c:
-	$(CC) src/cmd.c $(CFLAGS) -o bin/cmd
+$(TARGET): $(OBJFILES)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES)
 
-config.c:
-	$(CC) src/config.c $(CFLAGS) -o bin/config
+clean:
+	rm $(OBJFILES) $(TARGET)

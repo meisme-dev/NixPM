@@ -11,7 +11,6 @@ int insert_in_file(char *path, char *packages){
     int file_size = get_file_size(path);
     char current_line[file_size], content[file_size], content_until_line[file_size], content_after_line[file_size];
     char tmp_path[strlen(path) + 5], packages_formatted[strlen(packages) + 6];
-    char env_path[] = "/usr/bin/env";
     char file_extension[] = ".tmp";
     int line_found = 0;
 
@@ -42,20 +41,18 @@ int insert_in_file(char *path, char *packages){
         }
         if(s_loc){
             strcpy(content_until_line, content);
-            printf("Found %s at %p\n", current_line, s_loc);
+            printf("Found %s at %s\n", current_line, s_loc);
             fprintf(tmp_file, "%s", content_until_line);
             fprintf(tmp_file, "%s", packages_formatted);
             line_found = 1;
         }
     }
 
-    fprintf(tmp_file, content_after_line);
+    fprintf(tmp_file, "%s", content_after_line);
     fclose(tmp_file);
     fclose(file);
 
-    execl(env_path, "mv", tmp_path, path, NULL);
-
-    return 0;
+    return rename(tmp_path, path);
 }
 
 long unsigned int get_file_size(const char *filename){

@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <errno.h>
 #include <string.h>
+#include <limits.h>
 
 #include "config.h"
 
@@ -17,8 +18,8 @@ int main(int argc, char **argv){
   static int dryrun_flag = 0;
 
   struct Fields {
-    char file_name[1024];
-    char packages[1024];
+    char filename[FILENAME_MAX];
+    char packages[8192];
   };
   
   struct Fields fields;
@@ -49,7 +50,7 @@ int main(int argc, char **argv){
           break;
 
         case 'f':
-          strcpy(fields.file_name, optarg);
+          strcpy(fields.filename, optarg);
           filename_set = 1;
           break;
 
@@ -74,6 +75,10 @@ int main(int argc, char **argv){
   for(size_t i = 0; i <= strlen(fields.packages); i++){
     if(fields.packages[i] == ','){
       fields.packages[i] = '\n';
+      for(size_t t = 0; t < 7; t++, i++){
+        fields.packages[i + 2] = fields.packages[i + 1];
+        fields.packages[i + 1] = ' ';
+      }
     }
     if(fields.packages[i] == ' ' && fields.packages[i-1] != 0){
       fields.packages[i] = fields.packages[i + 1];
@@ -81,7 +86,7 @@ int main(int argc, char **argv){
     }
   }
   if(filename_set && packages_set){
-    insert_in_file(fields.file_name, fields.packages);
+    insert_in_file(fields.filename, fields.packages);
   }
   return 0;
 }
@@ -90,16 +95,16 @@ void print_help(){
   puts("Usage: nixpm <OPTIONS> [ARGUMENTS]...\n"
        "Easily add packages to your Nix config.\n"
        "\n"
-       "  -d, --dryrun    print generated config to stdout without overwriting any files\n"
+       "  -d, --dryrun    print generated config to stdout without overwriting any files (not yet implemented)\n"
        "  -f, --file      set the file to modify\n"
-       "  -g, --generate  generate a new config\n"
+       "  -g, --generate  generate a new config (not yet implemented)\n"
        "  -h, --help      display this help and exit\n"
        "  -p, --packages  set the packages to install\n"
        "  -v, --version   output version information and exit\n"
        "\n"
        "Examples:\n"
-       "  nixpm -f packages.nix -p firefox, latte-dock - Add Firefox and Latte Dock to `packages.nix`.\n"
-       "  nixpm --generate --file packages.nix - Generate a new config and write it to `packages.nix`.");
+       "  nixpm -f packages.nix -p firefox, latte-dock - Add Firefox and Latte Dock to 'packages.nix'.\n"
+       "  nixpm --generate --file packages.nix - Generate a new config and write it to 'packages.nix' (not yet implemented).");
 }
 
 void print_version(){
