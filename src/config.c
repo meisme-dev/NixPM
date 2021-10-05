@@ -7,7 +7,7 @@
 
 long unsigned int get_file_size(const char *filename);
 
-int insert_in_file(char *path, char *packages){
+int insert_in_file(char *path, char *packages, int dryrun_flag){
     int file_size = get_file_size(path);
     char current_line[file_size], content[file_size], content_until_line[file_size], content_after_line[file_size];
     char tmp_path[strlen(path) + 5], packages_formatted[strlen(packages) + 6];
@@ -47,11 +47,17 @@ int insert_in_file(char *path, char *packages){
         }
     }
 
-    fprintf(tmp_file, "%s", content_after_line);
-    fclose(tmp_file);
+    if(dryrun_flag){   
+        printf("%s%s%s\n", content_until_line, packages_formatted, content_after_line);
+        remove(tmp_path);
+    }
+    else{
+        fprintf(tmp_file, "%s", content_after_line);
+        fclose(tmp_file);
+        rename(tmp_path, path);
+    } 
     fclose(file);
-
-    return rename(tmp_path, path);
+    return 0;
 }
 
 long unsigned int get_file_size(const char *filename){

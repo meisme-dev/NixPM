@@ -8,82 +8,88 @@
 
 #include "config.h"
 
+#define PACKAGES_MAX 16384
+
 void print_help();
 void print_version();
 
 int main(int argc, char **argv){
-  int c;
-  int filename_set;
-  int packages_set;
-  static int dryrun_flag = 0;
+  int filename_set, packages_set, c;
+
 
   struct Fields {
     char filename[FILENAME_MAX];
-    char packages[8192];
+    char packages[PACKAGES_MAX];
   };
   
   struct Fields fields;
+  int dryrun_flag = 0;
 
   while(1){
-      static struct option long_options[] = {
-          {"dryrun", no_argument, &dryrun_flag, 'd'},
-          {"file", required_argument, 0, 'f'},
-          {"generate", no_argument, 0, 'g'},
-          {"help", no_argument, 0, 'h'},
-          {"packages", required_argument, 0, 'p'},
-          {"version", no_argument, 0, 'v'},
-          {0, 0, 0, 0}
-      };
+    static struct option long_options[] = {
+        {"dryrun", no_argument, 0, 'd'},
+        {"file", required_argument, 0, 'f'},
+        {"generate", no_argument, 0, 'g'},
+        {"help", no_argument, 0, 'h'},
+        {"packages", required_argument, 0, 'p'},
+        {"version", no_argument, 0, 'v'},
+        {0, 0, 0, 0}
+    };
 
-      int option_index = 0;
+    int option_index = 0;
 
+    c = getopt_long (argc, argv, "df:ghp:v",long_options, &option_index);
 
-      c = getopt_long (argc, argv, "df:ghp:v",
-                       long_options, &option_index);
-      if(c == -1)
+    if(c == -1)
+      break;
+      
+    switch(c){
+      case 0:
+        /*if(long_options[option_index].flag != 0)
+          break; */
         break;
-      switch(c){
-        case 0:
-          if (long_options[option_index].flag != 0){
-            break;
-          }
-          break;
 
-        case 'f':
-          strcpy(fields.filename, optarg);
-          filename_set = 1;
-          break;
+      case 'd':
+        dryrun_flag = 1;
+        break;
 
-        case 'p':
-          strcpy(fields.packages, optarg);
-          packages_set = 1;
-          break;
+      case 'f':
+        strcpy(fields.filename, optarg);
+        filename_set = 1;
+        break;
 
-        case 'h':
-          print_help();
-          break;
+      case 'p':
+        strcpy(fields.packages, optarg);
+        packages_set = 1;
+        break;
 
-        case 'v':
-          print_version();
-          break;
+      case 'h':
+        print_help();
+        break;
 
-        default:
-          exit(EINVAL);
-        }
+      case 'v':
+        print_version();
+        break;
+
+      default:
+        exit(EINVAL);
+    }
   }
 
   for(size_t i = 0; i <= strlen(fields.packages); i++){
     if(fields.packages[i] == ','){
       fields.packages[i] = '\n';
     }
-    if(fields.packages[i] == ' ' && fields.packages[i-1] != 0){
+    if(fields.packages[i] == ' ' && fields.packages[i - 1] != 0){
       fields.packages[i] = fields.packages[i + 1];
       i++;
     }
   }
+
   if(filename_set && packages_set){
-    insert_in_file(fields.filename, fields.packages);
+    insert_in_file(fields.filename, fields.packages, dryrun_flag);
   }
+
   return 0;
 }
 
@@ -91,7 +97,7 @@ void print_help(){
   puts("Usage: nixpm <OPTIONS> [ARGUMENTS]...\n"
        "Easily add packages to your Nix config.\n"
        "\n"
-       "  -d, --dryrun    print generated config to stdout without overwriting any files (not yet implemented)\n"
+       "  -d, --dryrun    print generated config to stdout without overwriting any files\n"
        "  -f, --file      set the file to modify\n"
        "  -g, --generate  generate a new config (not yet implemented)\n"
        "  -h, --help      display this help and exit\n"
@@ -105,7 +111,7 @@ void print_help(){
 
 void print_version(){
   puts("NixPM version 0.1.0\n"
-     "Copyright © 2021 NixPM contributors\n"
-     "Licensed under the MIT license, which you can find here:\n"
-     "https://opensource.org/licenses/MIT");
+       "Copyright © 2021 NixPM contributors\n"
+       "Licensed under the MIT license, which you can find here:\n"
+       "https://opensource.org/licenses/MIT");
 }

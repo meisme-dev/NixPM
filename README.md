@@ -7,7 +7,7 @@ A simple tool to add packages to your Nix config, written in compiler agnostic C
 nixpm <OPTIONS> [ARGUMENTS]...
 Easily add packages to your Nix config.
 
-  -d, --dryrun    print generated config to stdout without overwriting any files (not yet implemented)
+  -d, --dryrun    print generated config to stdout without overwriting any files
   -f, --file      set the file to modify
   -g, --generate  generate a new config (not yet implemented)
   -h, --help      display this help and exit

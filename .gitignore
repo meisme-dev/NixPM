@@ -1,6 +1,4 @@
 bin/
-template.nix
-a.out
-makefile
-packages.nix
 .vscode/
+*.nix
+*.o
