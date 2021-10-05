@@ -75,10 +75,6 @@ int main(int argc, char **argv){
   for(size_t i = 0; i <= strlen(fields.packages); i++){
     if(fields.packages[i] == ','){
       fields.packages[i] = '\n';
-      for(size_t t = 0; t < 7; t++, i++){
-        fields.packages[i + 2] = fields.packages[i + 1];
-        fields.packages[i + 1] = ' ';
-      }
     }
     if(fields.packages[i] == ' ' && fields.packages[i-1] != 0){
       fields.packages[i] = fields.packages[i + 1];

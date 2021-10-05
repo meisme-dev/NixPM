@@ -2,5 +2,5 @@ bin/
 template.nix
 a.out
 makefile
-template.nix
+packages.nix
 .vscode/
