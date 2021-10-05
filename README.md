@@ -30,4 +30,4 @@ Or by running `make`, which will use your system's default compiler.
 The code is far from perfect, and if you find anything wrong or would like a feature to be added, please open an issue or a pull request!
 
 ## Screenshots:
-\<example screenshot\>
+![Screenshot_20211005_171524](https://user-images.githubusercontent.com/49573906/136103749-efc1f15f-1b9d-455b-aa4f-0d979d7c254a.png)
