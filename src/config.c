@@ -41,7 +41,6 @@ int insert_in_file(char *path, char *packages){
         }
         if(s_loc){
             strcpy(content_until_line, content);
-            printf("Found %s at %s\n", current_line, s_loc);
             fprintf(tmp_file, "%s", content_until_line);
             fprintf(tmp_file, "%s", packages_formatted);
             line_found = 1;
